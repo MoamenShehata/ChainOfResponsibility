@@ -19,11 +19,13 @@
 	{
 		public void Handle(Request request)
 		{
+			var endOfChain = new NullRequestHandler();
 			var handler1 = new Manager(1000);
 			var handler2 = new Manager(3000);
 			var handler3 = new Manager(8500);
-			var endOfChain = new NullRequestHandler();
 
+
+			endOfChain.RegisterNext(handler1);
 			handler1.RegisterNext(handler2);
 			handler2.RegisterNext(handler3);
 			handler3.RegisterNext(endOfChain);
@@ -64,8 +66,12 @@
 		}
 	}
 
-	public class NullRequestHandler : IRequestHandler
+	public class NullRequestHandler : RequestHandler
 	{
-		public void Handle(Request request) => Console.WriteLine($"Request {request.Amount} is denied!");
+		public void Handle(Request request) => 
+		public override void Handle(Request request)
+		{
+			Console.WriteLine($"Request {request.Amount} is denied!");
+		}
 	}
 }
